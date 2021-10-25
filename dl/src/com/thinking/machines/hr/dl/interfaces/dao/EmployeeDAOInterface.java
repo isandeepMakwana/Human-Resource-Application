@@ -16,7 +16,7 @@ public EmployeeDTOInterface getByAadharCardNumber(String aadharCardNumber) throw
 
 public boolean employeeIdExists(String employeeId) throws DAOException;
 public boolean panNumberExists(String panNumber) throws DAOException;
-public boolean aadharNumberExists(String aadharCardNumber) throws DAOException;
+public boolean aadharCardNumberExists(String aadharCardNumber) throws DAOException;
 public int getCount() throws DAOException;
 public int getCountByDesignationCode(int designationCode) throws DAOException;
 }
