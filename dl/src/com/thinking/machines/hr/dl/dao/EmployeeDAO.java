@@ -169,7 +169,11 @@ try
 File file = new File(FILE_NAME);
 if(file.exists() == false) return employees;
 RandomAccessFile  randomAccessFile= new RandomAccessFile(file , "rw");
-if(randomAccessFile.length() == 0) return employees;
+if(randomAccessFile.length() == 0) 
+{
+randomAccessFile.close();
+return employees;
+}
 EmployeeDTOInterface employeeDTO;
 randomAccessFile.readLine();
 randomAccessFile.readLine();
@@ -208,6 +212,7 @@ throw new DAOException(ioException.getMessage());
 
 public Set<EmployeeDTOInterface> getByDesignationCode(int designationCode) throws DAOException
 {
+
 DesignationDAOInterface designationDAO = new DesignationDAO();
 if(designationDAO.codeExists(designationCode) == false) throw new DAOException("Invalid Code : "+designationCode);
 Set<EmployeeDTOInterface> employees = new TreeSet<>();
@@ -216,20 +221,29 @@ try
 File file = new File(FILE_NAME);
 if(file.exists() == false) return employees;
 RandomAccessFile  randomAccessFile= new RandomAccessFile(file , "rw");
-if(randomAccessFile.length() == 0) return employees;
+if(randomAccessFile.length() == 0)
+{
+randomAccessFile.close();
+return employees;
+}
 EmployeeDTOInterface employeeDTO;
 randomAccessFile.readLine();
 randomAccessFile.readLine();
-int fDesignationCode=0;
+int fDesignationCode;
+String employeeId;
+String name;
+char fGender;
 while(randomAccessFile.getFilePointer() < randomAccessFile.length())
 {
-employeeDTO = new EmployeeDTO();
-employeeDTO.setEmployeeId(randomAccessFile.readLine());
-employeeDTO.setName(randomAccessFile.readLine());
+employeeId = randomAccessFile.readLine();
+name = randomAccessFile.readLine();
 fDesignationCode = Integer.parseInt(randomAccessFile.readLine());
-employeeDTO.setDesignationCode(fDesignationCode);
 if(fDesignationCode == designationCode)
 {
+employeeDTO = new EmployeeDTO();
+employeeDTO.setEmployeeId(employeeId);
+employeeDTO.setName(name);
+employeeDTO.setDesignationCode(fDesignationCode);
 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 try
 {
@@ -239,7 +253,6 @@ catch(ParseException pe)
 {
 throw new DAOException(pe.getMessage());
 }
-char fGender;
 fGender = randomAccessFile.readLine().charAt(0);
 employeeDTO.setGender((fGender=='M')?GENDER.MALE : GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
@@ -271,7 +284,11 @@ try
 File file = new File(FILE_NAME);
 if(file.exists() == false) return false;
 RandomAccessFile  randomAccessFile= new RandomAccessFile(file , "rw");
-if(randomAccessFile.length() == 0) return false;
+if(randomAccessFile.length() == 0) 
+{
+randomAccessFile.close();
+return false;
+}
 randomAccessFile.readLine();
 randomAccessFile.readLine();
 int fDesignationCode=0;
@@ -306,7 +323,11 @@ try
 File file = new File(FILE_NAME);
 if(file.exists() == false) throw new DAOException("Invalid employeeId : "+employeeId);
 RandomAccessFile randomAccessFile = new RandomAccessFile(file ,"rw");
-if(randomAccessFile.length() ==0 )throw new DAOException("file length is Zero !");
+if(randomAccessFile.length() ==0 )
+{
+randomAccessFile.close();
+throw new DAOException("file length is Zero !");
+}
 String fEmployeeId;
 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 EmployeeDTO employeeDTO;
@@ -493,7 +514,11 @@ try
 File file = new File(FILE_NAME);
 if(file.exists() == false) return false;
 RandomAccessFile randomAccessFile = new RandomAccessFile(file ,"rw");
-if(randomAccessFile.length() ==0 ) return false;
+if(randomAccessFile.length() ==0 )
+{
+randomAccessFile.close();
+return false;
+}
 String fEmployeeId;
 randomAccessFile.readLine();
 randomAccessFile.readLine();
@@ -590,10 +615,62 @@ throw new DAOException(ioException.getMessage());
 }
 public int getCount() throws DAOException
 {
-throw new DAOException("NOT yet implemented");
+try
+{
+File file = new File(FILE_NAME);
+if(file.exists()==false) return 0;
+RandomAccessFile randomAccessFile= new RandomAccessFile(file , "rw");
+if(randomAccessFile.length() ==0)
+{
+randomAccessFile.close();
+return 0;
 }
+randomAccessFile.readLine();
+int recordCount = Integer.parseInt(randomAccessFile.readLine().trim());
+randomAccessFile.close();
+return recordCount; 
+}
+catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
+}
+
 public int getCountByDesignationCode(int designationCode) throws DAOException
 {
-throw new DAOException("not yet implemented");
+DesignationDAOInterface designationDAO = new DesignationDAO();
+if(designationDAO.codeExists(designationCode) == false) throw new DAOException("Invalid Code : "+designationCode);
+try
+{
+File file = new File(FILE_NAME);
+if(file.exists() == false) throw new DAOException("invalid desingnationCode : "+designationCode);
+RandomAccessFile  randomAccessFile= new RandomAccessFile(file , "rw");
+if(randomAccessFile.length() == 0)
+{
+randomAccessFile.close();
+return 0;
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+int fDesignationCode;
+int count=0;
+while(randomAccessFile.getFilePointer() < randomAccessFile.length())
+{
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+fDesignationCode = Integer.parseInt(randomAccessFile.readLine());
+if(fDesignationCode == designationCode)
+{
+count++;
+}
+for(int i=0; i<6;i++) randomAccessFile.readLine();
+}
+randomAccessFile.close();
+return count;
+}
+catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 }
