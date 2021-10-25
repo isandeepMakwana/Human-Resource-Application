@@ -3,6 +3,7 @@ import com.thinking.machines.hr.dl.interfaces.dto.*;
 import com.thinking.machines.hr.dl.interfaces.dao.*;
 import com.thinking.machines.hr.dl.dto.*;
 import com.thinking.machines.hr.dl.exceptions.*;
+import com.thinking.machines.hr.enums.*;
 import java.util.*;
 import java.io.*;
 import java.math.*;
@@ -172,6 +173,7 @@ if(randomAccessFile.length() == 0) return employees;
 EmployeeDTOInterface employeeDTO;
 randomAccessFile.readLine();
 randomAccessFile.readLine();
+char fGender;
 while(randomAccessFile.getFilePointer() < randomAccessFile.length())
 {
 employeeDTO = new EmployeeDTO();
@@ -187,7 +189,8 @@ catch(ParseException pe)
 {
 throw new DAOException(pe.getMessage());
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+fGender = randomAccessFile.readLine().charAt(0);
+employeeDTO.setGender((fGender=='M')?GENDER.MALE : GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());
@@ -236,7 +239,9 @@ catch(ParseException pe)
 {
 throw new DAOException(pe.getMessage());
 }
-employeeDTO.setGender(randomAccessFile.readLine().charAt(0));
+char fGender;
+fGender = randomAccessFile.readLine().charAt(0);
+employeeDTO.setGender((fGender=='M')?GENDER.MALE : GENDER.FEMALE);
 employeeDTO.setIsIndian(Boolean.parseBoolean(randomAccessFile.readLine()));
 employeeDTO.setBasicSalary(new BigDecimal(randomAccessFile.readLine()));
 employeeDTO.setPANNumber(randomAccessFile.readLine());

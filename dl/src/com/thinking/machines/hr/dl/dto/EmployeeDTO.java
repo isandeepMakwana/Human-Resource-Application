@@ -65,7 +65,6 @@ if(gender == GENDER.MALE)
 this.gender = 'M';
 else
 this.gender = 'F';
-
 }
 public char getGender()
 {

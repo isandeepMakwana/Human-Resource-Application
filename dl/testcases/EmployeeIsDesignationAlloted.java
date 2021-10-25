@@ -7,7 +7,7 @@ import java.text.*;
 import java.util.*;
 import java.math.*;
 
-public class EmployeeGetByDesignationCodeTestCase
+public class EmployeeIsDesignationAlloted
 {
 public static void main(String gg[])
 {

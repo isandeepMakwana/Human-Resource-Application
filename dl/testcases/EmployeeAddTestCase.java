@@ -3,6 +3,7 @@ import com.thinking.machines.hr.dl.interfaces.dao.*;
 import com.thinking.machines.hr.dl.interfaces.dto.*;
 import com.thinking.machines.hr.dl.dto.*;
 import com.thinking.machines.hr.dl.dao.*;
+import com.thinking.machines.hr.enums.*;
 import java.text.*;
 import java.util.*;
 import java.math.*;
@@ -33,7 +34,14 @@ employeeDTO = new EmployeeDTO();
 employeeDTO.setName(name);
 employeeDTO.setDesignationCode(designationCode);
 employeeDTO.setDateOfBirth(dateOfBirth);
-employeeDTO.setGender(gender);
+if(gender == 'M')
+{
+employeeDTO.setGender(GENDER.MALE);
+}
+else
+{
+employeeDTO.setGender(GENDER.FEMALE);
+}
 employeeDTO.setIsIndian(isIndian);
 employeeDTO.setBasicSalary(basicSalary);
 employeeDTO.setPANNumber(panNumber);
