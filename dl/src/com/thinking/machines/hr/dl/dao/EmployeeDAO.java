@@ -23,10 +23,8 @@ if(name.length()==0)
 {
 throw new DAOException("name length is Zero !");
 }
-
 int designationCode = employeeDTO.getDesignationCode();
 if(designationCode <0) throw new DAOException("Invalid Code : " +designationCode);
-
 boolean isDesignationCodeValid = false;
 DesignationDAO designationDAO = new DesignationDAO();
 isDesignationCodeValid = designationDAO.codeExists(designationCode);
@@ -34,13 +32,11 @@ if(!isDesignationCodeValid)
 {
 throw new DAOException("Invalid Code : "+designationCode);
 }
-
 Date dateOfBirth = employeeDTO.getDateOfBirth();
 if(dateOfBirth == null)
 {
 throw new DAOException("Date is null ");
 }
-
 char gender = employeeDTO.getGender();
 boolean isIndian = employeeDTO.getIsIndian();
 BigDecimal basicSalary = employeeDTO.getBasicSalary();
@@ -57,23 +53,19 @@ if(panNumber == null)
 {
 throw new DAOException("panNumber is null ");
 }
-
 if(panNumber.length() == 0)
 {
 throw new DAOException("panNumber length is Zero !");
 }
-
 String aadharCardNumber = employeeDTO.getAadharCardNumber();
 if(aadharCardNumber==null)
 {
 throw new DAOException("aadhar card number is null");
 }
-
 if(aadharCardNumber.length()==0)
 {
 throw new DAOException("aadhar card number length is Zero !");
 }
-
 try
 {
 File file = new File(FILE_NAME);
@@ -82,18 +74,14 @@ if(randomAccessFile == null)
 {
 throw new DAOException("file is null");
 }
-
 int lastGenreatedEmployeeId =10000000; 
 int recordCount = 0;
-
 String lastGenreatedEmployeeIdString ="";
 String recordCountString = "";
-
 if(randomAccessFile.length() == 0)
 {
 lastGenreatedEmployeeIdString = String.format("%-10s" , "10000000");
 randomAccessFile.writeBytes(lastGenreatedEmployeeIdString+"\n");
-
 recordCountString = String.format("%-10s" ,"0");
 randomAccessFile.writeBytes(recordCountString+"\n");
 }
@@ -122,7 +110,6 @@ if(aadharCardNumberExists == false && aadharCardNumber.equalsIgnoreCase(fAadharC
 aadharCardNumberExists =true;
 }
 }
-
 if(panNumberExists && aadharCardNumberExists)
 {
 randomAccessFile.close();
@@ -138,7 +125,6 @@ if(aadharCardNumberExists)
 randomAccessFile.close();
 throw new DAOException("AadharCard Number : "+aadharCardNumber+" exists !");
 }
-
 lastGenreatedEmployeeId++;
 employeeId = "A"+String.format("%-10d" ,lastGenreatedEmployeeId);
 randomAccessFile.writeBytes(employeeId+"\n");
@@ -163,18 +149,8 @@ randomAccessFile.close();
 catch(IOException ioException)
 {
 throw new DAOException(ioException.getMessage());
-
 }
-
-
-
-
 }
-
-
-
-
-
 public void update(EmployeeDTOInterface employeeDTO) throws DAOException
 {
 throw new DAOException("NOT yet implemented");
@@ -279,23 +255,43 @@ catch(IOException ioException)
 {
 throw new DAOException(ioException.getMessage());
 }
-
-
-
-
-
-
-
 }
-
-
-
-
-
 
 public boolean isDesignationAlloted(int designationCode) throws DAOException
 {
-throw new DAOException("NOT yet implemented");
+DesignationDAOInterface designationDAO = new DesignationDAO();
+if(designationDAO.codeExists(designationCode) == false) throw new DAOException("Invalid Code : "+designationCode);
+try
+{
+File file = new File(FILE_NAME);
+if(file.exists() == false) return false;
+RandomAccessFile  randomAccessFile= new RandomAccessFile(file , "rw");
+if(randomAccessFile.length() == 0) return false;
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+int fDesignationCode=0;
+while(randomAccessFile.getFilePointer() < randomAccessFile.length())
+{
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+fDesignationCode = Integer.parseInt(randomAccessFile.readLine());
+if(fDesignationCode == designationCode)
+{
+randomAccessFile.close();
+return true;
+}
+else
+{
+for(int i=0; i<6; i++) randomAccessFile.readLine();
+}
+}
+randomAccessFile.close();
+return false;
+}
+catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public EmployeeDTOInterface getByEmployeeId(String employeeId) throws DAOException
 {
