@@ -154,11 +154,248 @@ throw new DAOException(ioException.getMessage());
 }
 public void update(EmployeeDTOInterface employeeDTO) throws DAOException
 {
-throw new DAOException("NOT yet implemented");
+if(employeeDTO==null) throw new DAOException("employeeDTO is null");
+String employeeId;
+employeeId  = employeeDTO.getEmployeeId();
+if(employeeId == null) throw new DAOException("Invalid employeeId :  "+ employeeId);
+String name = employeeDTO.getName();
+if(name == null)
+{
+throw new DAOException("name is null");
+}
+if(name.length()==0)
+{
+throw new DAOException("name length is Zero !");
+}
+int designationCode = employeeDTO.getDesignationCode();
+if(designationCode <0) throw new DAOException("Invalid Code : " +designationCode);
+boolean isDesignationCodeValid = false;
+DesignationDAO designationDAO = new DesignationDAO();
+isDesignationCodeValid = designationDAO.codeExists(designationCode);
+if(!isDesignationCodeValid)
+{
+throw new DAOException("Invalid Code : "+designationCode);
+}
+Date dateOfBirth = employeeDTO.getDateOfBirth();
+if(dateOfBirth == null)
+{
+throw new DAOException("Date is null ");
+}
+char gender = employeeDTO.getGender();
+boolean isIndian = employeeDTO.getIsIndian();
+BigDecimal basicSalary = employeeDTO.getBasicSalary();
+if(basicSalary ==null)
+{
+throw new DAOException("basic Salary is null");
+}
+if(basicSalary.signum() == -1)
+{
+throw new DAOException("basic Salary is negative");
+}
+String panNumber = employeeDTO.getPANNumber();
+if(panNumber == null)
+{
+throw new DAOException("panNumber is null ");
+}
+if(panNumber.length() == 0)
+{
+throw new DAOException("panNumber length is Zero !");
+}
+String aadharCardNumber = employeeDTO.getAadharCardNumber();
+if(aadharCardNumber==null)
+{
+throw new DAOException("aadhar card number is null");
+}
+if(aadharCardNumber.length()==0)
+{
+throw new DAOException("aadhar card number length is Zero !");
+}
+try
+{
+File file = new File(FILE_NAME);
+if(file.exists() == false) throw new DAOException("Invalid employeeId :"+employeeId);
+RandomAccessFile randomAccessFile = new RandomAccessFile(file , "rw");
+if(randomAccessFile.length() == 0)
+{
+randomAccessFile.close();
+throw new DAOException("file length is zero !");
+}
+randomAccessFile.readLine();
+randomAccessFile.readLine();
+String fEmployeeId;
+String fName;
+int fDesignationCode;
+Date fDateOfBirth;
+char fGender;
+boolean fIsIndian;
+BigDecimal fBasicSalary;
+String fPanNumber;
+String fAadharCardNumber;
+SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+long foundAt=0;
+boolean employeeIdFound =false;
+boolean panNumberFound = false;
+boolean aadharCardNumberFound = false;
+
+String panNumberAgainstEmployeeId ="";
+String aadharCardNumberAgainstEmployeeId="";
+
+boolean panNumberExists = false;
+boolean aadharCardNumberExists = false;
+while(randomAccessFile.getFilePointer() < randomAccessFile.length())
+{
+if(employeeIdFound == false) foundAt = randomAccessFile.getFilePointer();
+fEmployeeId = randomAccessFile.readLine();
+for(int i=0; i<6;i++) randomAccessFile.readLine();
+fPanNumber = randomAccessFile.readLine();
+fAadharCardNumber = randomAccessFile.readLine();
+if(employeeIdFound == false && employeeId.equalsIgnoreCase(fEmployeeId))
+{
+employeeIdFound=true;
+}
+if(panNumberFound == false && panNumber.equalsIgnoreCase(fPanNumber))
+{
+panNumberFound = true;
+panNumberAgainstEmployeeId = fEmployeeId;
+}
+if(aadharCardNumberFound ==false && aadharCardNumber.equalsIgnoreCase(fAadharCardNumber))
+{
+aadharCardNumberFound = true;
+aadharCardNumberAgainstEmployeeId = fEmployeeId;
+}
+if(employeeIdFound && panNumberFound && aadharCardNumberFound)
+{
+break;
+}
+}
+if(employeeIdFound== false)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid employeeId : "+employeeId);
+}
+
+if(panNumberFound && panNumberAgainstEmployeeId.equalsIgnoreCase(employeeId) == false)
+{
+panNumberExists = true;
+}
+if(aadharCardNumberFound && aadharCardNumberAgainstEmployeeId.equalsIgnoreCase(employeeId) == false)
+{
+aadharCardNumberExists = true;
+}
+
+if(panNumberExists && aadharCardNumberExists)
+{
+randomAccessFile.close();
+throw new DAOException("panNumebr ( "+panNumber+" ) and aadharCardNumber ( "+aadharCardNumber+" ) is exists .");
+}
+if(panNumberExists)
+{
+randomAccessFile.close();
+throw new DAOException("panNumebr ( "+panNumber+" ) is exists .");
+}
+if(aadharCardNumberExists)
+{
+randomAccessFile.close();
+throw new DAOException("aadharCardNumber ( "+aadharCardNumber+" ) is exists .");
+}
+randomAccessFile.seek(foundAt);
+for(int i=0; i<9; i++) randomAccessFile.readLine();
+
+File tmpFile = new File("tmp.tmp");
+if(tmpFile.exists()) tmpFile.delete();
+RandomAccessFile tmpRandomAccessFile = new RandomAccessFile(tmpFile , "rw");
+while(randomAccessFile.getFilePointer() < randomAccessFile.length())
+{
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine()+"\n");
+}
+
+randomAccessFile.seek(foundAt);
+randomAccessFile.writeBytes(employeeId+"\n");
+randomAccessFile.writeBytes(name+"\n");
+randomAccessFile.writeBytes(designationCode+"\n");
+randomAccessFile.writeBytes(simpleDateFormat.format(dateOfBirth)+"\n");
+randomAccessFile.writeBytes(gender+"\n");
+randomAccessFile.writeBytes(isIndian+"\n");
+randomAccessFile.writeBytes(basicSalary+"\n");
+randomAccessFile.writeBytes(panNumber+"\n");
+randomAccessFile.writeBytes(aadharCardNumber+"\n");
+
+tmpRandomAccessFile.seek(0);
+while(tmpRandomAccessFile.getFilePointer() < tmpRandomAccessFile.length())
+{
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine()+"\n");
+}
+randomAccessFile.setLength(randomAccessFile.getFilePointer());
+tmpRandomAccessFile.setLength(0);
+tmpRandomAccessFile.close();
+randomAccessFile.close();
+}
+catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public void delete(String employeeId) throws DAOException
 {
-throw new DAOException("NOT yet implemented");
+if(employeeId == null) throw new DAOException("Invalid employeeId :  "+ employeeId);
+try
+{
+File file = new File(FILE_NAME);
+if(file.exists() == false) throw new DAOException("Invalid employeeId :"+employeeId);
+RandomAccessFile randomAccessFile = new RandomAccessFile(file , "rw");
+if(randomAccessFile.length() == 0)
+{
+randomAccessFile.close();
+throw new DAOException("file length is zero !");
+}
+randomAccessFile.readLine();
+int recordCount = Integer.parseInt(randomAccessFile.readLine().trim());
+String fEmployeeId;
+long foundAt =0;
+boolean employeeIdFound = false;
+while(randomAccessFile.getFilePointer()<randomAccessFile.length())
+{
+foundAt = randomAccessFile.getFilePointer();
+fEmployeeId = randomAccessFile.readLine();
+for(int i=0; i<8;i++) randomAccessFile.readLine();
+if(employeeId.equalsIgnoreCase(fEmployeeId))
+{
+employeeIdFound = true;
+break;
+}
+}
+if(employeeIdFound== false)
+{
+randomAccessFile.close();
+throw new DAOException("Invalid employeeId : "+employeeId);
+}
+File tmpFile = new File("tmp.tmp");
+if(tmpFile.exists()) tmpFile.delete();
+RandomAccessFile tmpRandomAccessFile = new RandomAccessFile(tmpFile , "rw");
+while(randomAccessFile.getFilePointer() < randomAccessFile.length())
+{
+tmpRandomAccessFile.writeBytes(randomAccessFile.readLine()+"\n");
+}
+randomAccessFile.seek(foundAt);
+tmpRandomAccessFile.seek(0);
+while(tmpRandomAccessFile.getFilePointer() < tmpRandomAccessFile.length())
+{
+randomAccessFile.writeBytes(tmpRandomAccessFile.readLine()+"\n");
+}
+randomAccessFile.setLength(randomAccessFile.getFilePointer());
+recordCount--;
+String recordCountString = String.format("%-10d" , recordCount);
+randomAccessFile.seek(0);
+randomAccessFile.readLine();
+randomAccessFile.writeBytes(recordCountString+"\n");
+randomAccessFile.close();
+tmpRandomAccessFile.setLength(0);
+tmpRandomAccessFile.close();
+}
+catch(IOException ioException)
+{
+throw new DAOException(ioException.getMessage());
+}
 }
 public Set<EmployeeDTOInterface> getAll() throws DAOException
 {

@@ -209,22 +209,27 @@ throw new DAOException("Invalid Code : "+ code);
 }
 
 int fCode;
-String fTitle;
+String fTitle="";
 randomAccessFile.readLine();
 int recordCount=Integer.parseInt(randomAccessFile.readLine().trim());
 boolean found = false;
 while(randomAccessFile.getFilePointer() < randomAccessFile.length())
 {
 fCode = Integer.parseInt(randomAccessFile.readLine().trim());
+fTitle = randomAccessFile.readLine();
 if(fCode == code)
 {
 found =true;
 }
-randomAccessFile.readLine();
 }
 if(found ==false) {
 randomAccessFile.close();
 throw new DAOException("Invalid Code "+ code);
+}
+if(new EmployeeDAO().isDesignationAlloted(code))
+{
+randomAccessFile.close();
+throw new DAOException("Designation ( "+fTitle+" ) can not be delete , becouse it's allocated to employee . ");
 }
 File tmpfile = new File("tmp.data");
 if(tmpfile.exists()) tmpfile.delete();

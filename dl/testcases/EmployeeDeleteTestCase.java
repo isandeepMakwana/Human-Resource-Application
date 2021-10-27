@@ -7,16 +7,17 @@ import java.text.*;
 import java.util.*;
 import java.math.*;
 
-public class EmployeeIsDesignationAlloted
+public class EmployeeDeleteTestCase
 {
 public static void main(String gg[])
 {
-int designationCode = Integer.parseInt(gg[0]);
+String employeeId = gg[0];
 try
 {
 EmployeeDAOInterface employeeDAO;
 employeeDAO = new EmployeeDAO();
-System.out.println("isDesignation ( "+designationCode+" ) : "+employeeDAO.isDesignationAlloted(designationCode));
+employeeDAO.delete(employeeId);
+System.out.println("deleted successfull");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());

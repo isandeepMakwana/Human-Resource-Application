@@ -8,29 +8,31 @@ import java.text.*;
 import java.util.*;
 import java.math.*;
 
-public class EmployeeAddTestCase
+public class EmployeeUpdateTestCase
 {
 public static void main(String gg[])
 {
-String name = gg[0];
+String employeeId = gg[0];
+String name = gg[1];
 Date dateOfBirth =null;
-int designationCode= Integer.parseInt(gg[1]);
+int designationCode= Integer.parseInt(gg[2]);
 try{
 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-dateOfBirth = sdf.parse(gg[2]);
-}catch(Exception e)
+dateOfBirth = sdf.parse(gg[3]);
+}catch(ParseException pe)
 {
-System.out.println(e.getMessage());
+System.out.println(pe.getMessage());
 }
 try
 {
-char gender = gg[3].charAt(0);
-boolean isIndian= Boolean.parseBoolean(gg[4]);
-BigDecimal basicSalary = new BigDecimal(gg[5]);
-String panNumber = gg[6];
-String aadharCardNumber = gg[7];
+char gender = gg[4].charAt(0);
+boolean isIndian= Boolean.parseBoolean(gg[5]);
+BigDecimal basicSalary = new BigDecimal(gg[6]);
+String panNumber = gg[7];
+String aadharCardNumber = gg[8];
 EmployeeDTOInterface employeeDTO;
 employeeDTO = new EmployeeDTO();
+employeeDTO.setEmployeeId(employeeId);
 employeeDTO.setName(name);
 employeeDTO.setDesignationCode(designationCode);
 employeeDTO.setDateOfBirth(dateOfBirth);
@@ -42,7 +44,6 @@ else
 {
 employeeDTO.setGender(GENDER.FEMALE);
 }
-System.out.println(isIndian);
 employeeDTO.setIsIndian(isIndian);
 employeeDTO.setBasicSalary(basicSalary);
 employeeDTO.setPANNumber(panNumber);
@@ -50,8 +51,8 @@ employeeDTO.setAadharCardNumber(aadharCardNumber);
 
 EmployeeDAOInterface employeeDAO;
 employeeDAO  = new EmployeeDAO();
-employeeDAO.add(employeeDTO);
-System.out.println("Employee added");
+employeeDAO.update(employeeDTO);
+System.out.println("Employee updated");
 }catch(DAOException daoException)
 {
 System.out.println(daoException.getMessage());
