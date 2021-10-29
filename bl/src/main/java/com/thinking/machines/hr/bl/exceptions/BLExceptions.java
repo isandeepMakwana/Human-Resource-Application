@@ -1,11 +1,10 @@
 package com.thinking.machines.hr.bl.exceptions;
 import java.util.*;
-
-public class BLexception extends Exception
+public class BLExceptions extends Exception
 {
 private Map<String , String> exceptions;
 private String genricException;
-public BLException()
+public BLExceptions()
 {
 genricException = null;
 exceptions = new HashMap();
@@ -16,7 +15,7 @@ this.genricException = genricException;
 }
 public String getGenricException()
 {
-if(this.genricException == null) return ="";
+if(this.genricException == null) return "";
 return this.genricException;
 }
 
@@ -56,7 +55,7 @@ return this.exceptions.size()>0;
 public List<String> getProperties()
 {
 List <String> properties = new ArrayList<>();
-this.exception.forEach((k ,v) ->{properties.add(k);});
+this.exceptions.forEach((k ,v) ->{properties.add(k);});
 return properties;
 }
 
