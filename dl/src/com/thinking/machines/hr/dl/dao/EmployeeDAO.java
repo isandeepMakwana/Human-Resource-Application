@@ -128,6 +128,7 @@ throw new DAOException("AadharCard Number : "+aadharCardNumber+" exists !");
 }
 lastGenreatedEmployeeId++;
 employeeId = "A"+lastGenreatedEmployeeId;
+employeeDTO.setEmployeeId(employeeId);
 randomAccessFile.writeBytes(employeeId+"\n");
 randomAccessFile.writeBytes(name+"\n");
 randomAccessFile.writeBytes(designationCode+"\n");
