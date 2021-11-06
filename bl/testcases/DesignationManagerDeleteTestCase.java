@@ -12,6 +12,7 @@ int code = Integer.parseInt(gg[0]);
 try
 {
 DesignationManagerInterface designationManager;
+
 designationManager = DesignationManager.getDesignationManager();
 designationManager.removeDesignation(code);
 System.out.println("designation deleted ");
