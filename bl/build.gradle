@@ -1,5 +1,5 @@
 apply plugin : 'java'
 dependencies 
 {
-compile files('../dl/dist/hr-dl-1.0.jar');
+compile files('../dl/dist/hr-dl-1.0.jar' , '../comman/dist/hr-comman.jar');
 }

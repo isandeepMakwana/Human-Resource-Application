@@ -1,9 +1,17 @@
+com/thinking/machines/hr/bl/interfaces/managers/EmployeeManagerInterface.java
+ com.thinking.machines.hr.bl.interfaces.managers.EmployeeManagerInterface
 com/thinking/machines/hr/bl/exceptions/BLException.java
  com.thinking.machines.hr.bl.exceptions.BLException
+com/thinking/machines/hr/bl/managers/EmployeeManager.java
+ com.thinking.machines.hr.bl.managers.EmployeeManager
 com/thinking/machines/hr/bl/interfaces/managers/DesignationManagerInterface.java
  com.thinking.machines.hr.bl.interfaces.managers.DesignationManagerInterface
+com/thinking/machines/hr/bl/pojo/Employee.java
+ com.thinking.machines.hr.bl.pojo.Employee
 com/thinking/machines/hr/bl/managers/DesignationManager.java
  com.thinking.machines.hr.bl.managers.DesignationManager
+com/thinking/machines/hr/bl/interfaces/pojo/EmployeeInterface.java
+ com.thinking.machines.hr.bl.interfaces.pojo.EmployeeInterface
 com/thinking/machines/hr/bl/pojo/Designation.java
  com.thinking.machines.hr.bl.pojo.Designation
 com/thinking/machines/hr/bl/interfaces/pojo/DesignationInterface.java
