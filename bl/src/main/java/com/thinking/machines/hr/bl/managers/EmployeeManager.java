@@ -19,7 +19,7 @@ private Map<String , EmployeeInterface> employeeIdWiseEmployeesMap;
 private Map<String , EmployeeInterface> panNumberWiseEmployeesMap;
 private Map<String , EmployeeInterface> aadharCardNumberWiseEmployeesMap;
 private Set<EmployeeInterface> employeesSet;
-
+private Map<Integer , Set<EmployeeInterface>> designationCodeWiseEmployeesMap;
 private static EmployeeManagerInterface employeeManager =null;
 private EmployeeManager() throws BLException
 {
@@ -32,6 +32,7 @@ this.employeeIdWiseEmployeesMap = new HashMap<>();
 this.panNumberWiseEmployeesMap = new HashMap<>();
 this.aadharCardNumberWiseEmployeesMap = new HashMap<>();
 this.employeesSet = new TreeSet<>();
+this.designationCodeWiseEmployeesMap= new HashMap<>();
 try
 {
 Set<EmployeeDTOInterface> dlEmployees;
@@ -40,6 +41,7 @@ EmployeeInterface employee;
 DesignationManagerInterface designationManager;
 designationManager = DesignationManager.getDesignationManager();
 DesignationInterface designation;
+Set<EmployeeInterface> ets;
 for(EmployeeDTOInterface dlEmployee : dlEmployees)
 {
 employee = new Employee();
@@ -65,6 +67,17 @@ this.employeeIdWiseEmployeesMap.put(employee.getEmployeeId().toUpperCase() , emp
 this.panNumberWiseEmployeesMap.put(employee.getPANNumber().toUpperCase() , employee);
 this.aadharCardNumberWiseEmployeesMap.put(employee.getAadharCardNumber().toUpperCase() , employee);
 this.employeesSet.add(employee);
+ets = this.designationCodeWiseEmployeesMap.get(designation.getCode());
+if(ets ==null)
+{
+ets = new TreeSet<>();
+ets.add(employee);
+designationCodeWiseEmployeesMap.put(designation.getCode() , ets);
+}
+else
+{
+ets.add(employee);
+}
 }
 }
 catch(DAOException  daoException)
@@ -606,23 +619,45 @@ employees.add(employee);
 return employees;
 }
 
-public Set<EmployeeInterface> getEmployeesByDesignationCode(int designationCode) throws BLException{
-BLException blException = new BLException();
-blException.setGenricException("not yet implement");
-throw blException;
+public Set<EmployeeInterface> getEmployeesByDesignationCode(int designationCode) throws BLException
+{
+Set<EmployeeInterface> employees =new TreeSet<>();
+Set<EmployeeInterface> dsEmployees;
+dsEmployees = this.designationCodeWiseEmployeesMap.get(designationCode);
+EmployeeInterface employee;
+for(EmployeeInterface dsEmployee:dsEmployees)
+{
+employee = new Employee();
+employee.setEmployeeId(dsEmployee.getEmployeeId());
+employee.setName(dsEmployee.getName());
+DesignationInterface dsDesignation;
+dsDesignation  = dsEmployee.getDesignation();
+DesignationInterface designation;
+designation = new Designation();
+designation.setCode(dsDesignation.getCode());
+designation.setTitle(dsDesignation.getTitle());
+employee.setDesignation(designation);
+employee.setDateOfBirth((Date)dsEmployee.getDateOfBirth().clone());
+employee.setIsIndian(dsEmployee.getIsIndian());
+employee.setGender((dsEmployee.getGender() =='M')?GENDER.MALE : GENDER.FEMALE);
+employee.setBasicSalary(dsEmployee.getBasicSalary());
+employee.setPANNumber(dsEmployee.getPANNumber());
+employee.setAadharCardNumber(dsEmployee.getAadharCardNumber());
+employees.add(employee);
+}
+return employees;
 }
 
 public boolean isDesignationAlloted(int designationCode)
 {
-// not yet implement
-
-return false;
+return this.designationCodeWiseEmployeesMap.containsKey(designationCode);
 }
 
 public int getEmployeeCountByDesignationCode(int designationCode) throws BLException
 {
-BLException blException = new BLException();
-blException.setGenricException("not yet implement");
-throw blException;
+Set<EmployeeInterface> ets;
+ets  = this.designationCodeWiseEmployeesMap.get(designationCode);
+if(ets == null) return 0;
+return ets.size();
 }
 }
