@@ -12,13 +12,13 @@ public EmployeeInterface getEmployeeByEmployeeId(String employeeId) throws BLExc
 public EmployeeInterface getEmployeeByPANNumber(String panNumber) throws BLException;
 public EmployeeInterface getEmployeeByAadharCardNumber(String aadharCardNumber) throws BLException;
 
-public boolean employeeIdExists(String employeeId) throws BLException;
-public boolean panNumberExists(String panNumber) throws BLException;
-public boolean aadharCardNumberExists(String aadharCardNumber) throws BLException;
-public int getEmployeeCount() throws BLException;
+public boolean employeeIdExists(String employeeId);
+public boolean panNumberExists(String panNumber);
+public boolean aadharCardNumberExists(String aadharCardNumber);
+public int getEmployeeCount();
 
-public Set<EmployeeInterface> getEmployees() throws BLException;
+public Set<EmployeeInterface> getEmployees();
 public Set<EmployeeInterface> getEmployeesByDesignationCode(int designationCode) throws BLException;
-public boolean isDesignationAlloted(int designationCode) throws BLException;
+public boolean isDesignationAlloted(int designationCode);
 public int getEmployeeCountByDesignationCode(int designationCode) throws BLException;
 }

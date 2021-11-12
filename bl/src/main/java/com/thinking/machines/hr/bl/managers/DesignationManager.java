@@ -236,9 +236,11 @@ if(designation == null)
 blException.addException("code","Invalid code "+code);
 throw blException;
 }
-return designation;
+Designation d = new Designation();
+d.setCode(designation.getCode());
+d.setTitle(designation.getTitle());
+return d;
 }
-
 public DesignationInterface getDesignationByTitle(String title) throws BLException
 {
 if(title ==null)
@@ -261,23 +263,26 @@ BLException blException = new BLException();
 blException.addException("code","Invalid Designation "+title);
 throw blException;
 }
-return designation;
+Designation d = new Designation();
+d.setCode(designation.getCode());
+d.setTitle(designation.getTitle());
+
+return d;
 }
-public boolean designationCodeExists(int code) throws BLException
+public boolean designationCodeExists(int code)
 {
 return this.codeWiseDesignationMap.containsKey(code);
 }
-public boolean designationTitleExists(String title) throws BLException{
+public boolean designationTitleExists(String title)
+{
 return this.titleWiseDesignationMap.containsKey(title.toUpperCase());
 }
-public int getDesignationCount() throws BLException
+public int getDesignationCount()
 {
 return designationsSet.size();
 }
-public Set<DesignationInterface> getDesignations() throws  BLException
+public Set<DesignationInterface> getDesignations()
 {
-BLException blException;
-blException = new BLException();
 Set<DesignationInterface> designations;
 designations = new TreeSet<>();
 designationsSet.forEach((designation) -> {
@@ -287,5 +292,12 @@ d.setTitle(designation.getTitle());
 designations.add(d);
 });
 return designations;
+}
+
+DesignationInterface getDSDesignationByCode(int code)
+{
+DesignationInterface designation;
+designation = codeWiseDesignationMap.get(code);
+return designation;
 }
 }

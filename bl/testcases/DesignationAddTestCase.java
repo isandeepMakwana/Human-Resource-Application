@@ -8,7 +8,7 @@ public class DesignationAddTestCase
 {
 public static void main(String gg[])
 {
-String title = "Clerk";
+String title = "Techer";
 try{
 DesignationInterface designation;
 designation = new Designation();
