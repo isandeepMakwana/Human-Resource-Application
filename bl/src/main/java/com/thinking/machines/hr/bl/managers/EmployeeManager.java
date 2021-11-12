@@ -252,6 +252,18 @@ this.employeesSet.add(dsEmployee);
 this.employeeIdWiseEmployeesMap.put(dsEmployee.getEmployeeId().toUpperCase() , dsEmployee);
 this.panNumberWiseEmployeesMap.put(panNumber.toUpperCase() , dsEmployee);
 this.aadharCardNumberWiseEmployeesMap.put(aadharCardNumber.toUpperCase() , dsEmployee);
+Set<EmployeeInterface> ets;
+ets = this.designationCodeWiseEmployeesMap.get(dsEmployee.getDesignation().getCode());
+if(ets == null)
+{
+ets = new TreeSet<>();
+ets.add(dsEmployee);
+this.designationCodeWiseEmployeesMap.put(dsEmployee.getDesignation().getCode() , ets);
+}
+else
+{
+ets.add(dsEmployee);
+}
 }
 catch(DAOException daoException)
 {
@@ -353,8 +365,6 @@ if(panNumber.length() == 0)
 blException.addException("panNumber" , "panNumber is required");
 }
 }
-
-
 if(aadharCardNumber == null)
 {
 blException.addException("aadharCardNumber" , "aadhar card Number is null");
@@ -394,7 +404,7 @@ String oldAadharCardNumber;
 EmployeeInterface dsEmployee = this.employeeIdWiseEmployeesMap.get(employeeId.toUpperCase());
 oldPanNumber = dsEmployee.getPANNumber();
 oldAadharCardNumber = dsEmployee.getAadharCardNumber();
-
+int oldDesignationCode = dsEmployee.getDesignation().getCode();
 try
 {
 EmployeeDAOInterface employeeDAO;
@@ -433,13 +443,30 @@ this.employeeIdWiseEmployeesMap.remove(employeeId.toUpperCase());
 this.panNumberWiseEmployeesMap.remove(oldPanNumber.toUpperCase());
 this.aadharCardNumberWiseEmployeesMap.remove(oldAadharCardNumber.toUpperCase());
 this.employeesSet.remove(dsEmployee);
-// add new all DS
+
 this.employeesSet.add(dsEmployee);
 this.employeeIdWiseEmployeesMap.put(dsEmployee.getEmployeeId().toUpperCase() , dsEmployee);
 this.panNumberWiseEmployeesMap.put(panNumber.toUpperCase() , dsEmployee);
 this.aadharCardNumberWiseEmployeesMap.put(aadharCardNumber.toUpperCase() , dsEmployee);
+
+if(oldDesignationCode != dsEmployee.getDesignation().getCode())
+{
+Set<EmployeeInterface> ets;
+ets = this.designationCodeWiseEmployeesMap.get(oldDesignationCode);
+ets.remove(dsEmployee);
+ets = this.designationCodeWiseEmployeesMap.get(dsEmployee.getDesignation().getCode());
+if(ets== null)
+{
+ets = new TreeSet<>();
+ets.add(dsEmployee);
+this.designationCodeWiseEmployeesMap.put(dsEmployee.getDesignation().getCode() , ets);
 }
-catch(DAOException daoException)
+else
+{
+ets.add(dsEmployee);
+}
+}
+}catch(DAOException daoException)
 {
 blException.setGenricException(daoException.getMessage());
 throw blException;
@@ -477,6 +504,9 @@ this.employeeIdWiseEmployeesMap.remove(employeeId.toUpperCase());
 this.panNumberWiseEmployeesMap.remove(oldPanNumber.toUpperCase());
 this.aadharCardNumberWiseEmployeesMap.remove(oldAadharCardNumber.toUpperCase());
 this.employeesSet.remove(dsEmployee);
+Set<EmployeeInterface> ets;
+ets = this.designationCodeWiseEmployeesMap.get(dsEmployee.getDesignation().getCode());
+ets.remove(dsEmployee);
 }
 catch(DAOException daoException)
 {
@@ -621,18 +651,30 @@ return employees;
 
 public Set<EmployeeInterface> getEmployeesByDesignationCode(int designationCode) throws BLException
 {
+DesignationManagerInterface designationManager;
+designationManager = DesignationManager.getDesignationManager();
+
+if(designationManager.designationCodeExists(designationCode) == false)
+{                               
+BLException blException;
+blException = new BLException();
+blException.setGenricException("Invalid code : "+designationCode);
+throw blException;
+}
 Set<EmployeeInterface> employees =new TreeSet<>();
 Set<EmployeeInterface> dsEmployees;
 dsEmployees = this.designationCodeWiseEmployeesMap.get(designationCode);
+if(dsEmployees == null) return employees;
+
 EmployeeInterface employee;
+DesignationInterface dsDesignation;
+DesignationInterface designation;
 for(EmployeeInterface dsEmployee:dsEmployees)
 {
 employee = new Employee();
 employee.setEmployeeId(dsEmployee.getEmployeeId());
 employee.setName(dsEmployee.getName());
-DesignationInterface dsDesignation;
 dsDesignation  = dsEmployee.getDesignation();
-DesignationInterface designation;
 designation = new Designation();
 designation.setCode(dsDesignation.getCode());
 designation.setTitle(dsDesignation.getTitle());
